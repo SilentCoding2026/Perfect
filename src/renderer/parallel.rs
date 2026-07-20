@@ -172,7 +172,6 @@ pub fn render_scene_adaptive(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::scene::EntityKind;
     use crate::timeline::CameraTrack;
 
     #[test]

@@ -97,7 +97,6 @@ pub fn render_to_video<W: std::io::Write>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::scene::EntityKind;
     use crate::timeline::CameraTrack;
 
     #[test]

@@ -77,9 +77,71 @@ fn validate_color(_field: &str, _color: &[u8; 3]) -> Result<(), AnimError> {
     Ok(())
 }
 
+/// Validate color fields in raw JSON have values in 0-255 before deserialization.
+fn validate_json_value_colors(v: &serde_json::Value) -> Result<(), AnimError> {
+    let check_color =
+        |v: &serde_json::Value, field: &str| -> Result<(), AnimError> {
+            if let Some(arr) = v.as_array() {
+                for item in arr.iter() {
+                    if let Some(n) = item.as_i64() {
+                        if n < 0 || n > 255 {
+                            return Err(AnimError::Asset(format!(
+                                "Field '{}' has value {} which is outside the valid range [0, 255]",
+                                field, n
+                            )));
+                        }
+                    }
+                }
+            }
+            Ok(())
+        };
+
+    if let Some(body) = v.get("body") {
+        if let Some(color) = body.get("skin_color") {
+            check_color(color, "body.skin_color")?;
+        }
+    }
+    if let Some(face) = v.get("face") {
+        if let Some(color) = face.get("eye_color") {
+            check_color(color, "face.eye_color")?;
+        }
+    }
+    if let Some(hair) = v.get("hair") {
+        if let Some(color) = hair.get("color") {
+            check_color(color, "hair.color")?;
+        }
+    }
+    if let Some(outfit) = v.get("outfit") {
+        if let Some(top) = outfit.get("top") {
+            if let Some(color) = top.get("color") {
+                check_color(color, "outfit.top.color")?;
+            }
+            if let Some(color) = top.get("secondary_color") {
+                check_color(color, "outfit.top.secondary_color")?;
+            }
+        }
+        if let Some(bottom) = outfit.get("bottom") {
+            if let Some(color) = bottom.get("color") {
+                check_color(color, "outfit.bottom.color")?;
+            }
+        }
+        if let Some(shoes) = outfit.get("shoes") {
+            if let Some(color) = shoes.get("color") {
+                check_color(color, "outfit.shoes.color")?;
+            }
+        }
+    }
+
+    Ok(())
+}
+
 /// Validate a complete character JSON string.
 pub fn validate_character_json(json: &str) -> Result<CharacterDesc, AnimError> {
-    let desc: CharacterDesc = serde_json::from_str(json)
+    let v: serde_json::Value = serde_json::from_str(json)
+        .map_err(|e| AnimError::Asset(format!("Failed to parse character JSON: {}", e)))?;
+    validate_json_value_colors(&v)?;
+
+    let desc: CharacterDesc = serde_json::from_value(v)
         .map_err(|e| AnimError::Asset(format!("Failed to parse character JSON: {}", e)))?;
 
     validate_character(&desc)?;

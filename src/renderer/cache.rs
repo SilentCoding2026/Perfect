@@ -274,7 +274,7 @@ impl Default for PoseCache {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::procedural::{Expression, HairStyle};
+    use crate::procedural::HairStyle;
 
     fn test_desc() -> CharacterDesc {
         CharacterDesc {

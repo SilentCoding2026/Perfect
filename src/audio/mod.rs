@@ -315,7 +315,7 @@ mod tests {
 
     #[test]
     fn test_audio_timeline_creation() {
-        let mut timeline = AudioTimeline::new();
+        let timeline = AudioTimeline::new();
         assert!(timeline.main_track.is_none());
         assert_eq!(timeline.cues.len(), 0);
         assert_eq!(timeline.volume, 1.0);
@@ -323,7 +323,7 @@ mod tests {
 
     #[test]
     fn test_audio_timeline_duration() {
-        let mut timeline = AudioTimeline::new();
+        let timeline = AudioTimeline::new();
         // Add a cue with a duration.
         // Since we can't load real audio files in tests, we'll just check that
         // the duration is computed correctly from the stored values.

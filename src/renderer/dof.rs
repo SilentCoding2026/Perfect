@@ -253,7 +253,10 @@ mod tests {
 
     #[test]
     fn test_blur_radius_computation() {
-        let config = DepthOfFieldConfig::default();
+        let config = DepthOfFieldConfig {
+            enabled: true,
+            ..DepthOfFieldConfig::default()
+        };
 
         // At focal distance, blur should be 0.
         assert_eq!(compute_blur_radius(0.5, &config), 0.0);

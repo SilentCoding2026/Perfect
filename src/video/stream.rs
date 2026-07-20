@@ -184,7 +184,6 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::renderer::Frame;
 
     #[test]
     fn test_encoder_lifecycle() {

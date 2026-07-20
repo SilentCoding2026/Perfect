@@ -284,7 +284,10 @@ fn cmd_render(
     let use_parallel = !sequential && total_frames > 200;
 
     if use_parallel {
-        log::info!("Using parallel rendering with {} cores", renderer::parallel::num_cores());
+        log::info!(
+            "Using parallel rendering with {} cores",
+            renderer::parallel::num_cores()
+        );
     } else {
         log::info!("Using sequential rendering");
     }

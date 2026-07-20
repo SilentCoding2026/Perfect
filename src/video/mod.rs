@@ -11,7 +11,7 @@ use crate::errors::AnimError;
 use crate::renderer::Frame;
 
 // Re-export streaming and format types.
-pub use formats::{VideoFormat, StreamingFormatEncoder};
+pub use formats::{StreamingFormatEncoder, VideoFormat};
 pub use stream::VideoStreamEncoder;
 
 /// Encode a sequence of frames into an MP4 video file.

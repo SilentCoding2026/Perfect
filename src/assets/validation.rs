@@ -23,7 +23,12 @@ pub fn validate_character(desc: &CharacterDesc) -> Result<(), AnimError> {
     validate_range("face.shape", desc.face.shape, 0.0, 1.0)?;
     validate_range("face.eye_size", desc.face.eye_size, 0.5, 1.2)?;
     validate_color("face.eye_color", &desc.face.eye_color)?;
-    validate_range("face.eyebrow_thickness", desc.face.eyebrow_thickness, 0.0, 1.0)?;
+    validate_range(
+        "face.eyebrow_thickness",
+        desc.face.eyebrow_thickness,
+        0.0,
+        1.0,
+    )?;
     validate_range("face.nose_size", desc.face.nose_size, 0.0, 1.0)?;
     validate_range("face.lip_fullness", desc.face.lip_fullness, 0.0, 1.0)?;
 
@@ -124,9 +129,7 @@ pub fn validate_rig_json(json: &str) -> Result<(), AnimError> {
                 ));
             }
         } else {
-            return Err(AnimError::Asset(
-                "Skeleton must have a 'root' bone".into(),
-            ));
+            return Err(AnimError::Asset("Skeleton must have a 'root' bone".into()));
         }
     }
 

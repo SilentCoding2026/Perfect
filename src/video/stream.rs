@@ -103,9 +103,9 @@ impl VideoStreamEncoder {
             .as_mut()
             .ok_or_else(|| AnimError::Video("ffmpeg stdin not available".into()))?;
 
-        stdin
-            .write_all(&frame.data)
-            .map_err(|e| AnimError::Video(format!("failed to write frame {}: {e}", self.frame_count)))?;
+        stdin.write_all(&frame.data).map_err(|e| {
+            AnimError::Video(format!("failed to write frame {}: {e}", self.frame_count))
+        })?;
 
         self.frame_count += 1;
         Ok(self.frame_count - 1)

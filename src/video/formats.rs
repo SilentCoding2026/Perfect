@@ -281,7 +281,9 @@ pub fn encode_gif(
         .stderr(Stdio::piped())
         .spawn()
         .map_err(|e| {
-            AnimError::Video(format!("failed to start ffmpeg for GIF: {e}. Is ffmpeg installed?"))
+            AnimError::Video(format!(
+                "failed to start ffmpeg for GIF: {e}. Is ffmpeg installed?"
+            ))
         })?;
 
     let stdin = child
@@ -304,7 +306,9 @@ pub fn encode_gif(
 
     if !output_result.status.success() {
         let stderr = String::from_utf8_lossy(&output_result.stderr);
-        return Err(AnimError::Video(format!("ffmpeg GIF encoding failed: {stderr}")));
+        return Err(AnimError::Video(format!(
+            "ffmpeg GIF encoding failed: {stderr}"
+        )));
     }
 
     log::info!("GIF encoded successfully: {}", output.display());
@@ -409,9 +413,9 @@ impl StreamingFormatEncoder {
             .as_mut()
             .ok_or_else(|| AnimError::Video("ffmpeg stdin not available".into()))?;
 
-        stdin
-            .write_all(&frame.data)
-            .map_err(|e| AnimError::Video(format!("failed to write frame {}: {e}", self.frame_count)))?;
+        stdin.write_all(&frame.data).map_err(|e| {
+            AnimError::Video(format!("failed to write frame {}: {e}", self.frame_count))
+        })?;
 
         self.frame_count += 1;
         Ok(self.frame_count - 1)

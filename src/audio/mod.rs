@@ -69,9 +69,7 @@ impl AudioTrack {
                 path.as_os_str().to_str().unwrap(),
             ])
             .output()
-            .map_err(|e| {
-                AnimError::Audio(format!("Failed to probe audio file: {}", e))
-            })?;
+            .map_err(|e| AnimError::Audio(format!("Failed to probe audio file: {}", e)))?;
 
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
@@ -98,9 +96,9 @@ impl AudioTrack {
 
         // Get sample rate and channels from the first audio stream.
         let streams = json["streams"].as_array().unwrap_or(&vec![]);
-        let audio_stream = streams.iter().find(|s| {
-            s["codec_type"].as_str() == Some("audio")
-        });
+        let audio_stream = streams
+            .iter()
+            .find(|s| s["codec_type"].as_str() == Some("audio"));
 
         let sample_rate = audio_stream
             .and_then(|s| s["sample_rate"].as_str())
@@ -167,7 +165,8 @@ impl AudioTimeline {
             volume: volume.clamp(0.0, 1.0),
         });
         // Sort cues by time.
-        self.cues.sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap());
+        self.cues
+            .sort_by(|a, b| a.time.partial_cmp(&b.time).unwrap());
         Ok(())
     }
 

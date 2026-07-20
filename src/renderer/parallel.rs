@@ -170,7 +170,8 @@ pub fn render_scene_parallel(
         if hits + misses > 0 {
             log::info!(
                 "Pose cache: {} hits, {} misses ({:.1}% hit rate)",
-                hits, misses,
+                hits,
+                misses,
                 (hits as f64 / (hits + misses) as f64) * 100.0
             );
         }
@@ -200,7 +201,10 @@ pub fn render_scene_adaptive(
     let total_frames = (timeline.duration * config.fps as f64).ceil() as usize;
 
     if total_frames < min_frames_for_parallel {
-        log::info!("Using sequential render ({} frames < threshold)", total_frames);
+        log::info!(
+            "Using sequential render ({} frames < threshold)",
+            total_frames
+        );
         super::render_scene(
             config,
             timeline,
@@ -241,14 +245,8 @@ mod tests {
         let assets = AssetRegistry::new();
         let custom_poses = HashMap::new();
 
-        let result = render_scene_parallel(
-            &config,
-            &timeline,
-            &entities,
-            None,
-            &assets,
-            &custom_poses,
-        );
+        let result =
+            render_scene_parallel(&config, &timeline, &entities, None, &assets, &custom_poses);
 
         // Should render 12 frames (0.5s at 24fps).
         assert!(result.is_ok());

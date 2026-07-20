@@ -122,10 +122,7 @@ fn load_character(name: &str, path: &Path) -> Result<CharacterAsset, AnimError> 
         if rig_json.exists() {
             // Validate rig JSON before loading.
             let rig_content = std::fs::read_to_string(&rig_json).map_err(|e| {
-                AnimError::Asset(format!(
-                    "failed to read rig.json for '{}': {}",
-                    name, e
-                ))
+                AnimError::Asset(format!("failed to read rig.json for '{}': {}", name, e))
             })?;
             validate_rig_json(&rig_content)?;
             let rig = crate::skeleton::load_rig(name, path)?;

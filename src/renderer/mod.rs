@@ -29,7 +29,7 @@ use crate::timeline::{
 };
 
 use cache::PoseCache;
-pub use dof::{DepthOfFieldConfig, apply_depth_of_field};
+pub use dof::{apply_depth_of_field, DepthOfFieldConfig};
 
 /// A rendered frame as raw RGBA pixel data.
 pub struct Frame {
@@ -42,7 +42,8 @@ pub struct Frame {
 static POSE_CACHE: Lazy<Mutex<PoseCache>> = Lazy::new(|| Mutex::new(PoseCache::default()));
 
 /// Global depth of field configuration.
-static DOF_CONFIG: Lazy<Mutex<DepthOfFieldConfig>> = Lazy::new(|| Mutex::new(DepthOfFieldConfig::default()));
+static DOF_CONFIG: Lazy<Mutex<DepthOfFieldConfig>> =
+    Lazy::new(|| Mutex::new(DepthOfFieldConfig::default()));
 
 /// Set the depth of field configuration.
 pub fn set_dof_config(config: DepthOfFieldConfig) {
@@ -108,7 +109,8 @@ pub fn render_scene(
         if hits + misses > 0 {
             log::info!(
                 "Pose cache: {} hits, {} misses ({:.1}% hit rate)",
-                hits, misses,
+                hits,
+                misses,
                 (hits as f64 / (hits + misses) as f64) * 100.0
             );
         }

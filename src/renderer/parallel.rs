@@ -72,7 +72,7 @@ pub fn render_scene_parallel(
                 timeline,
                 &initial_entities,
                 set_name,
-                &assets,
+                assets,
                 &custom_poses,
                 t,
             );

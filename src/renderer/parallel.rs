@@ -116,7 +116,7 @@ pub fn render_scene_parallel(
 
     // The current approach loses index. Let's use a different strategy:
     // Collect (index, frame) pairs and sort by index.
-    let frames_with_index: Vec<(usize, Frame)> = (0..total_frames)
+    let frames_with_index: Vec<(usize, Result<Frame, AnimError>)> = (0..total_frames)
         .into_par_iter()
         .map(|frame_idx| {
             let t = frame_idx as f64 / config.fps as f64;

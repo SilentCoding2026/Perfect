@@ -3,9 +3,7 @@
 pub mod formats;
 pub mod stream;
 
-use std::io::Write;
 use std::path::Path;
-use std::process::{Command, Stdio};
 
 use crate::errors::AnimError;
 use crate::renderer::Frame;

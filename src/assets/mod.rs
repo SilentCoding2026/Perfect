@@ -11,7 +11,7 @@ use crate::errors::AnimError;
 use crate::procedural::CharacterDesc;
 use crate::skeleton::CharacterRig;
 
-use validation::{validate_character, validate_rig_json};
+use validation::validate_rig_json;
 
 /// A loaded character — legacy SVG, rig-based, or procedural.
 #[derive(Debug, Clone)]

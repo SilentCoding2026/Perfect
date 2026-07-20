@@ -4,7 +4,7 @@
 //! ranges and enum values before they are loaded.
 
 use crate::errors::AnimError;
-use crate::procedural::{AccessoryKind, CharacterDesc, ClothingKind, HairStyle, ShoeKind};
+use crate::procedural::CharacterDesc;
 
 /// Validate a character description JSON.
 ///

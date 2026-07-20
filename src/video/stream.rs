@@ -118,14 +118,15 @@ impl VideoStreamEncoder {
 
         log::info!("Waiting for FFmpeg to finish encoding...");
 
-        let output_result = self
+        let status = self
             .child
-            .wait_with_output()
+            .wait()
             .map_err(|e| AnimError::Video(format!("ffmpeg process error: {e}")))?;
 
-        if !output_result.status.success() {
-            let stderr = String::from_utf8_lossy(&output_result.stderr);
-            return Err(AnimError::Video(format!("ffmpeg failed: {stderr}")));
+        if !status.success() {
+            return Err(AnimError::Video(format!(
+                "ffmpeg exited with status: {status}"
+            )));
         }
 
         log::info!(

@@ -4,7 +4,7 @@
 //! audio-video muxing via FFmpeg.
 
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::Command;
 
 use crate::errors::AnimError;
 
@@ -95,7 +95,8 @@ impl AudioTrack {
             .unwrap_or(0.0);
 
         // Get sample rate and channels from the first audio stream.
-        let streams = json["streams"].as_array().unwrap_or(&vec![]);
+        let empty = vec![];
+        let streams = json["streams"].as_array().unwrap_or(&empty);
         let audio_stream = streams
             .iter()
             .find(|s| s["codec_type"].as_str() == Some("audio"));

@@ -475,7 +475,7 @@ fn render_procedural_character(
     let cache_key = cache::PoseCacheKey::from_state(entity_name, desc, &char_state);
 
     if let Ok(mut cache) = POSE_CACHE.lock() {
-        if let Some((cached_pixmap, cached_w, cached_h)) = cache.get(&cache_key) {
+        if let Some((_cached_pixmap, cached_w, cached_h)) = cache.get(&cache_key) {
             if cached_w == canvas_w && cached_h == canvas_h {
                 log::debug!("Pose cache hit for {}", entity_name);
                 // Direct render for now.

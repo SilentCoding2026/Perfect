@@ -6,7 +6,7 @@
 
 use std::f64::consts::PI;
 use tiny_skia::{
-    Color as SkiaColor, FillRule, LineCap, LineJoin, Paint, PathBuilder, Pixmap, PixmapPaint,
+    Color as SkiaColor, FillRule, LineCap, LineJoin, Paint, PathBuilder, Pixmap,
     Stroke, Transform,
 };
 
@@ -679,7 +679,7 @@ pub fn apply_secondary_motion(state: &mut CharacterState, dt: f64) {
 
 /// Draw a complete character onto a pixmap.
 pub fn draw_character(
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     state: &CharacterState,
     pixmap: &mut Pixmap,
     cx: f64,      // center x in pixels
@@ -705,7 +705,7 @@ pub fn draw_character(
     let height_factor = 0.7 + desc.body.height * 0.6; // 0.7 to 1.3
     let width_factor = 0.7 + desc.body.build * 0.6;
 
-    let total_h = 200.0 * height_factor * scale;
+    let _total_h = 200.0 * height_factor * scale;
     let head_r = 22.0 * scale * (1.0 + desc.body.build * 0.1);
     let neck_h = 8.0 * scale;
     let torso_h = 65.0 * height_factor * scale * state.torso_squash;
@@ -898,7 +898,7 @@ pub fn draw_character(
 
 fn draw_torso(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     state: &CharacterState,
     sx: f64,
     sy: f64,
@@ -907,7 +907,7 @@ fn draw_torso(
     w: f64,
     h: f64,
     scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     turn_factor: f64,
     _front_factor: f64,
@@ -1044,7 +1044,7 @@ fn draw_torso(
         ClothingKind::Suit => {
             // Lapels and tie.
             if let Some(sec) = desc.outfit.top.secondary_color {
-                let mut tie_paint = solid_paint(sec[0], sec[1], sec[2], opacity);
+                let tie_paint = solid_paint(sec[0], sec[1], sec[2], opacity);
                 let mut pb = PathBuilder::new();
                 pb.move_to(sx as f32 - 3.0, sy as f32 + 5.0);
                 pb.line_to(sx as f32, (sy + h * 0.6) as f32);
@@ -1061,7 +1061,7 @@ fn draw_torso(
                 }
             }
             // Collar lines.
-            let mut line_paint = solid_paint(
+            let line_paint = solid_paint(
                 color[0].saturating_sub(25),
                 color[1].saturating_sub(25),
                 color[2].saturating_sub(25),
@@ -1089,7 +1089,7 @@ fn draw_torso(
             let cloth_sw = state.clothing_swing * scale * 0.2;
             let belt_y = lerp(sy, hy, 0.55);
             let belt_w = w * 0.48;
-            let mut belt_paint = solid_paint(
+            let belt_paint = solid_paint(
                 color[0].saturating_sub(30),
                 color[1].saturating_sub(30),
                 color[2].saturating_sub(30),
@@ -1104,7 +1104,7 @@ fn draw_torso(
                 &belt_paint,
             );
             // Buckle.
-            let mut buckle = solid_paint(200, 180, 80, opacity);
+            let buckle = solid_paint(200, 180, 80, opacity);
             fill_rect(
                 pixmap,
                 sx - 3.0 * scale + cloth_sw,
@@ -1114,7 +1114,7 @@ fn draw_torso(
                 &buckle,
             );
             // Lapels.
-            let mut lapel = solid_paint(
+            let lapel = solid_paint(
                 color[0].saturating_sub(15),
                 color[1].saturating_sub(15),
                 color[2].saturating_sub(15),
@@ -1155,7 +1155,7 @@ fn draw_torso(
             let pocket_y = lerp(sy, hy, 0.5);
             let pocket_w = w * 0.35;
             let pocket_h = h * 0.2;
-            let mut pocket_paint = solid_paint(
+            let pocket_paint = solid_paint(
                 color[0].saturating_sub(15),
                 color[1].saturating_sub(15),
                 color[2].saturating_sub(15),
@@ -1170,7 +1170,7 @@ fn draw_torso(
                 &pocket_paint,
             );
             // Hoodie strings.
-            let mut string_paint = solid_paint(200, 210, 220, opacity);
+            let string_paint = solid_paint(200, 210, 220, opacity);
             let stroke = Stroke {
                 width: 1.2,
                 ..Stroke::default()
@@ -1200,7 +1200,7 @@ fn draw_neck(
     sy: f64,
     w: f64,
     opacity: f64,
-    skin: [u8; 3],
+    _skin: [u8; 3],
 ) {
     let mut pb = PathBuilder::new();
     pb.move_to((hx - w * 0.5) as f32, ny as f32);
@@ -1215,7 +1215,7 @@ fn draw_neck(
 
 fn draw_arm(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     _state: &CharacterState,
     sx: f64,
     sy: f64,
@@ -1223,10 +1223,10 @@ fn draw_arm(
     elbow_bend: f64,
     length: f64,
     width: f64,
-    scale: f64,
-    flip: f64,
+    _scale: f64,
+    _flip: f64,
     opacity: f64,
-    skin: [u8; 3],
+    _skin: [u8; 3],
     top: &ClothingItem,
     is_back: bool,
 ) {
@@ -1463,7 +1463,7 @@ fn draw_arm(
 
 fn draw_leg(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     _state: &CharacterState,
     hx: f64,
     hy: f64,
@@ -1471,10 +1471,10 @@ fn draw_leg(
     knee_bend: f64,
     length: f64,
     width: f64,
-    scale: f64,
-    flip: f64,
+    _scale: f64,
+    _flip: f64,
     opacity: f64,
-    skin: [u8; 3],
+    _skin: [u8; 3],
     outfit: &OutfitDesc,
     is_back: bool,
 ) {
@@ -1632,7 +1632,7 @@ fn draw_leg(
 
     // Sneaker stripe.
     if outfit.shoes.kind == ShoeKind::Sneakers {
-        let mut stripe = solid_paint(255, 255, 255, opacity * 0.8);
+        let stripe = solid_paint(255, 255, 255, opacity * 0.8);
         let stroke = Stroke {
             width: 1.5,
             line_cap: LineCap::Round,
@@ -1655,13 +1655,13 @@ fn draw_leg(
 
 fn draw_head(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     state: &CharacterState,
     cx: f64,
     cy: f64,
     r: f64,
     scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     turn_factor: f64,
     front_factor: f64,
@@ -2041,15 +2041,15 @@ fn draw_head(
 
 fn draw_eye(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     state: &CharacterState,
     cx: f64,
     cy: f64,
     r: f64,
     openness: f64,
     eyebrow_pos: f64,
-    scale: f64,
-    flip: f64,
+    _scale: f64,
+    _flip: f64,
     opacity: f64,
     tilt: f64,
     rot_cx: f64,
@@ -2263,12 +2263,12 @@ fn draw_eye(
 
 fn draw_mouth(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     state: &CharacterState,
     cx: f64,
     cy: f64,
     head_r: f64,
-    scale: f64,
+    _scale: f64,
     opacity: f64,
     tilt: f64,
     rot_cx: f64,
@@ -2466,13 +2466,13 @@ fn draw_mouth(
 
 fn draw_hair_back(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     cx: f64,
     cy: f64,
     rx: f64,
     ry: f64,
     scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     tilt: f64,
     hair_swing: f64,
@@ -2553,13 +2553,13 @@ fn draw_hair_back(
 
 fn draw_hair_front(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     cx: f64,
     cy: f64,
     rx: f64,
     ry: f64,
     scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     tilt: f64,
     hair_swing: f64,
@@ -2813,8 +2813,8 @@ fn draw_fedora(
     rot_cy: f64,
 ) {
     let transform = tilt_transform(tilt, rot_cx, rot_cy);
-    let mut paint = solid_paint(color[0], color[1], color[2], opacity);
-    let mut dark = solid_paint(
+    let paint = solid_paint(color[0], color[1], color[2], opacity);
+    let dark = solid_paint(
         color[0].saturating_sub(20),
         color[1].saturating_sub(20),
         color[2].saturating_sub(20),
@@ -2865,7 +2865,7 @@ fn draw_fedora(
         width: 2.5,
         ..Stroke::default()
     };
-    let mut band = solid_paint(
+    let band = solid_paint(
         color[0].saturating_sub(40),
         color[1].saturating_sub(40),
         color[2].saturating_sub(40),
@@ -2897,7 +2897,7 @@ fn draw_glasses(
     rot_cy: f64,
 ) {
     let transform = tilt_transform(tilt, rot_cx, rot_cy);
-    let mut paint = solid_paint(color[0], color[1], color[2], opacity);
+    let paint = solid_paint(color[0], color[1], color[2], opacity);
     let stroke = Stroke {
         width: 1.8,
         line_cap: LineCap::Round,
@@ -3273,7 +3273,7 @@ fn draw_shaded_path(
 }
 
 fn solid_paint(r: u8, g: u8, b: u8, opacity: f64) -> Paint<'static> {
-    let mut paint = Paint::default();
+    let paint = Paint::default();
     paint.set_color(SkiaColor::from_rgba8(r, g, b, (opacity * 255.0) as u8));
     paint.anti_alias = true;
     paint

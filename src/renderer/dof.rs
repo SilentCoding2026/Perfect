@@ -3,7 +3,7 @@
 //! Applies blur to entities based on their z-distance from the focal plane.
 //! Uses a simple Gaussian blur approximation for performance.
 
-use tiny_skia::{Color, Pixmap, PixmapPaint, Transform};
+use tiny_skia::Pixmap;
 
 use crate::errors::AnimError;
 
@@ -60,9 +60,9 @@ pub fn apply_depth_of_field(
         return Ok(());
     }
 
-    let w = pixmap.width() as usize;
-    let h = pixmap.height() as usize;
-    let data = pixmap.data_mut();
+    let _w = pixmap.width() as usize;
+    let _h = pixmap.height() as usize;
+    let _data = pixmap.data_mut();
 
     // We need to compute per-pixel blur radius based on the z-buffer.
     // For simplicity, we apply a uniform blur based on the average z of the
@@ -96,16 +96,16 @@ pub fn apply_depth_of_field(
 
 /// Apply a simple box blur to a pixmap.
 fn apply_box_blur(pixmap: &mut Pixmap, radius: usize) {
-    let w = pixmap.width() as usize;
-    let h = pixmap.height() as usize;
-    let data = pixmap.data_mut();
+    let _w = pixmap.width() as usize;
+    let _h = pixmap.height() as usize;
+    let _data = pixmap.data_mut();
 
     if radius == 0 || w < radius * 2 || h < radius * 2 {
         return;
     }
 
     let kernel_size = radius * 2 + 1;
-    let kernel_area = (kernel_size * kernel_size) as f64;
+    let _kernel_area = (kernel_size * kernel_size) as f64;
 
     // Horizontal pass.
     let mut temp = vec![0u8; w * h * 4];

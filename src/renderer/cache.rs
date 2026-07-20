@@ -46,7 +46,7 @@ pub struct PoseCacheKey {
 
 impl PoseCacheKey {
     /// Create a cache key from a character description and state.
-    pub fn from_state(name: &str, desc: &CharacterDesc, state: &CharacterState) -> Self {
+    pub fn from_state(name: &str, _desc: &CharacterDesc, state: &CharacterState) -> Self {
         Self {
             character_name: name.to_string(),
             body_angle: state.body_angle,

@@ -9,6 +9,7 @@ use tiny_skia::{
 use super::*;
 
 /// Render a character to a pixmap at the given position.
+#[allow(clippy::too_many_arguments)]
 pub fn render_character_to_pixmap(
     desc: &CharacterDesc,
     state: &CharacterState,

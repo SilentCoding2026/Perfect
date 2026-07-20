@@ -83,7 +83,7 @@ fn validate_json_value_colors(v: &serde_json::Value) -> Result<(), AnimError> {
         if let Some(arr) = v.as_array() {
             for item in arr.iter() {
                 if let Some(n) = item.as_i64() {
-                    if n < 0 || n > 255 {
+                    if !(0..=255).contains(&n) {
                         return Err(AnimError::Asset(format!(
                             "Field '{}' has value {} which is outside the valid range [0, 255]",
                             field, n

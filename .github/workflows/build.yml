@@ -1,0 +1,125 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        profile: minimal
+        components: rustfmt, clippy
+
+    - name: Cache cargo
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+
+    - name: Install FFmpeg (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+
+    - name: Install FFmpeg (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install ffmpeg
+
+    - name: Install FFmpeg (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        choco install ffmpeg -y
+
+    - name: Check formatting
+      run: cargo fmt -- --check
+
+    - name: Clippy
+      run: cargo clippy -- -D warnings
+
+    - name: Build
+      run: cargo build --release --verbose
+
+    - name: Run tests
+      run: cargo test --release --verbose
+
+    - name: Upload binary artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: animdsl-${{ runner.os }}
+        path: target/release/animdsl${{ runner.os == 'Windows' && '.exe' || '' }}
+        retention-days: 30
+
+  validate-examples:
+    name: Validate Examples
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        profile: minimal
+
+    - name: Cache cargo
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: validate-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          validate-cargo-
+
+    - name: Install FFmpeg
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+
+    - name: Build
+      run: cargo build --release
+
+    - name: Check all example scripts
+      run: |
+        for file in examples/*.anim; do
+          echo "Checking $file..."
+          cargo run --release -- check "$file"
+        done
+
+    - name: Render test
+      run: |
+        cargo run --release -- render examples/the-last-barista.anim -o /tmp/output.mp4 --sequential
+        test -f /tmp/output.mp4
+        echo "Render test passed!"

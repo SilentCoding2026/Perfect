@@ -587,10 +587,7 @@ impl TimelineCompiler {
         let value = self.get_entity_property(entity, property);
         let time = self.time;
 
-        let props = self
-            .tracks
-            .entry(entity.to_string())
-            .or_default();
+        let props = self.tracks.entry(entity.to_string()).or_default();
         let keyframes = props.entry(property).or_default();
 
         if keyframes.is_empty() {
@@ -610,10 +607,7 @@ impl TimelineCompiler {
         value: f64,
         easing: Easing,
     ) {
-        let props = self
-            .tracks
-            .entry(entity.to_string())
-            .or_default();
+        let props = self.tracks.entry(entity.to_string()).or_default();
         let keyframes = props.entry(property).or_default();
         keyframes.push(Keyframe {
             time,
@@ -630,10 +624,7 @@ impl TimelineCompiler {
         value: f64,
         easing: Easing,
     ) {
-        let props = self
-            .tracks
-            .entry(entity.to_string())
-            .or_default();
+        let props = self.tracks.entry(entity.to_string()).or_default();
         let keyframes = props.entry(property).or_default();
         keyframes.push(Keyframe {
             time,

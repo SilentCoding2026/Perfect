@@ -2499,60 +2499,58 @@ fn draw_hair_back(
     let swing_offset = hair_swing * scale * 0.3;
 
     match desc.hair.style {
-        HairStyle::Straight | HairStyle::Wavy
-            if desc.hair.length > 0.3 => {
-                let hair_len = ry * (0.5 + desc.hair.length * 1.2);
-                let transform = tilt_transform(tilt, cx, cy);
-                let mut pb = PathBuilder::new();
-                // Top anchored near head, bottom tips sway with swing.
-                pb.move_to((cx - rx * 0.9) as f32, (cy - ry * 0.2) as f32);
-                pb.quad_to(
-                    (cx - rx * 1.1 + swing_offset * 0.5) as f32,
-                    (cy + hair_len * 0.5) as f32,
-                    (cx - rx * 0.7 + swing_offset) as f32,
-                    (cy + hair_len) as f32,
-                );
-                pb.line_to(
-                    (cx + rx * 0.7 + swing_offset) as f32,
-                    (cy + hair_len) as f32,
-                );
-                pb.quad_to(
-                    (cx + rx * 1.1 + swing_offset * 0.5) as f32,
-                    (cy + hair_len * 0.5) as f32,
-                    (cx + rx * 0.9) as f32,
-                    (cy - ry * 0.2) as f32,
-                );
-                pb.close();
-                if let Some(path) = pb.finish() {
-                    pixmap.fill_path(&path, &paint, FillRule::Winding, transform, None);
-                    // Outline.
-                    pixmap.stroke_path(&path, &ol_paint, &ol_stroke, transform, None);
-                }
+        HairStyle::Straight | HairStyle::Wavy if desc.hair.length > 0.3 => {
+            let hair_len = ry * (0.5 + desc.hair.length * 1.2);
+            let transform = tilt_transform(tilt, cx, cy);
+            let mut pb = PathBuilder::new();
+            // Top anchored near head, bottom tips sway with swing.
+            pb.move_to((cx - rx * 0.9) as f32, (cy - ry * 0.2) as f32);
+            pb.quad_to(
+                (cx - rx * 1.1 + swing_offset * 0.5) as f32,
+                (cy + hair_len * 0.5) as f32,
+                (cx - rx * 0.7 + swing_offset) as f32,
+                (cy + hair_len) as f32,
+            );
+            pb.line_to(
+                (cx + rx * 0.7 + swing_offset) as f32,
+                (cy + hair_len) as f32,
+            );
+            pb.quad_to(
+                (cx + rx * 1.1 + swing_offset * 0.5) as f32,
+                (cy + hair_len * 0.5) as f32,
+                (cx + rx * 0.9) as f32,
+                (cy - ry * 0.2) as f32,
+            );
+            pb.close();
+            if let Some(path) = pb.finish() {
+                pixmap.fill_path(&path, &paint, FillRule::Winding, transform, None);
+                // Outline.
+                pixmap.stroke_path(&path, &ol_paint, &ol_stroke, transform, None);
+            }
 
-                // Hair strand lines (3-4 curved lines in slightly darker shade).
-                let strand_c = shade_color(c, 0.15);
-                let strand_paint =
-                    solid_paint(strand_c[0], strand_c[1], strand_c[2], opacity * 0.5);
-                let strand_stroke = Stroke {
-                    width: 0.8,
-                    line_cap: LineCap::Round,
-                    ..Stroke::default()
-                };
-                for i in 0..4 {
-                    let t = (i as f64 + 1.0) / 5.0;
-                    let sx = cx + rx * (t * 1.4 - 0.7) + swing_offset * t;
-                    let mut pb = PathBuilder::new();
-                    pb.move_to(sx as f32, (cy - ry * 0.1) as f32);
-                    pb.quad_to(
-                        (sx + swing_offset * 0.3) as f32,
-                        (cy + hair_len * 0.5) as f32,
-                        (sx + swing_offset * 0.6) as f32,
-                        (cy + hair_len * 0.9) as f32,
-                    );
-                    if let Some(path) = pb.finish() {
-                        pixmap.stroke_path(&path, &strand_paint, &strand_stroke, transform, None);
-                    }
+            // Hair strand lines (3-4 curved lines in slightly darker shade).
+            let strand_c = shade_color(c, 0.15);
+            let strand_paint = solid_paint(strand_c[0], strand_c[1], strand_c[2], opacity * 0.5);
+            let strand_stroke = Stroke {
+                width: 0.8,
+                line_cap: LineCap::Round,
+                ..Stroke::default()
+            };
+            for i in 0..4 {
+                let t = (i as f64 + 1.0) / 5.0;
+                let sx = cx + rx * (t * 1.4 - 0.7) + swing_offset * t;
+                let mut pb = PathBuilder::new();
+                pb.move_to(sx as f32, (cy - ry * 0.1) as f32);
+                pb.quad_to(
+                    (sx + swing_offset * 0.3) as f32,
+                    (cy + hair_len * 0.5) as f32,
+                    (sx + swing_offset * 0.6) as f32,
+                    (cy + hair_len * 0.9) as f32,
+                );
+                if let Some(path) = pb.finish() {
+                    pixmap.stroke_path(&path, &strand_paint, &strand_stroke, transform, None);
                 }
+            }
         }
         _ => {}
     }

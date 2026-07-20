@@ -264,6 +264,7 @@ pub fn render_frame(
 }
 
 /// Render a character (either legacy or rigged).
+#[allow(clippy::too_many_arguments)]
 fn render_character(
     asset: &CharacterAsset,
     state: &EntityState,
@@ -324,6 +325,7 @@ fn render_character(
 }
 
 /// Render a rig-based character with per-bone part compositing.
+#[allow(clippy::too_many_arguments)]
 fn render_rigged_character(
     rig: &CharacterRig,
     state: &EntityState,
@@ -399,6 +401,7 @@ fn render_rigged_character(
 }
 
 /// Render a procedurally drawn character with pose caching.
+#[allow(clippy::too_many_arguments)]
 fn render_procedural_character(
     desc: &procedural::CharacterDesc,
     state: &EntityState,
@@ -505,6 +508,7 @@ fn render_procedural_character(
 // ---------------------------------------------------------------------------
 
 /// Recursively render bones in the skeleton tree, accumulating transforms.
+#[allow(clippy::too_many_arguments)]
 fn render_bone_tree(
     bone: &skeleton::Bone,
     bone_states: &[BoneState],
@@ -571,6 +575,7 @@ fn render_bone_tree(
 }
 
 /// Render a single bone's SVG part at the given world transform.
+#[allow(clippy::too_many_arguments)]
 fn render_bone_part(
     part: &skeleton::PartAsset,
     pixmap: &mut Pixmap,
@@ -722,6 +727,7 @@ fn compute_velocity(timeline: &Timeline, entity_name: &str, t: f64) -> (f64, f64
 // Legacy SVG rendering
 // ---------------------------------------------------------------------------
 
+#[allow(clippy::too_many_arguments)]
 fn render_svg_to_pixmap(
     svg_data: &[u8],
     pixmap: &mut Pixmap,

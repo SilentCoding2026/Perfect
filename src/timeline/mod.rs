@@ -590,8 +590,8 @@ impl TimelineCompiler {
         let props = self
             .tracks
             .entry(entity.to_string())
-            .or_insert_with(HashMap::new);
-        let keyframes = props.entry(property).or_insert_with(Vec::new);
+            .or_default();
+        let keyframes = props.entry(property).or_default();
 
         if keyframes.is_empty() {
             keyframes.push(Keyframe {
@@ -613,8 +613,8 @@ impl TimelineCompiler {
         let props = self
             .tracks
             .entry(entity.to_string())
-            .or_insert_with(HashMap::new);
-        let keyframes = props.entry(property).or_insert_with(Vec::new);
+            .or_default();
+        let keyframes = props.entry(property).or_default();
         keyframes.push(Keyframe {
             time,
             value,
@@ -633,8 +633,8 @@ impl TimelineCompiler {
         let props = self
             .tracks
             .entry(entity.to_string())
-            .or_insert_with(HashMap::new);
-        let keyframes = props.entry(property).or_insert_with(Vec::new);
+            .or_default();
+        let keyframes = props.entry(property).or_default();
         keyframes.push(Keyframe {
             time,
             value,
@@ -845,7 +845,7 @@ pub fn check_overlaps(
             let y = get_value(name, tracks, Property::Y, t);
 
             // Skip offscreen characters.
-            if x < -0.1 || x > 1.1 {
+            if !(-0.1..=1.1).contains(&x) {
                 continue;
             }
 

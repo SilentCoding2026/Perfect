@@ -13,7 +13,7 @@ pub struct VideoStreamEncoder {
     child: std::process::Child,
     width: u32,
     height: u32,
-    fps: u32,
+    _fps: u32,
     frame_count: u64,
     output_path: std::path::PathBuf,
 }
@@ -80,7 +80,7 @@ impl VideoStreamEncoder {
             child,
             width,
             height,
-            fps,
+            _fps: fps,
             frame_count: 0,
             output_path: output.to_path_buf(),
         })

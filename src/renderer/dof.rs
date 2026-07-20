@@ -60,10 +60,6 @@ pub fn apply_depth_of_field(
         return Ok(());
     }
 
-    let w = pixmap.width() as usize;
-    let h = pixmap.height() as usize;
-    let data = pixmap.data_mut();
-
     // We need to compute per-pixel blur radius based on the z-buffer.
     // For simplicity, we apply a uniform blur based on the average z of the
     // visible pixels.
@@ -117,8 +113,11 @@ fn apply_box_blur(pixmap: &mut Pixmap, radius: usize) {
             let mut a = 0.0;
 
             for dx in 0..kernel_size {
+                if x + dx < radius {
+                    continue;
+                }
                 let sx = x + dx - radius;
-                if sx < 0 || sx >= w {
+                if sx >= w {
                     continue;
                 }
                 let idx = (y * w + sx) * 4;
@@ -145,8 +144,11 @@ fn apply_box_blur(pixmap: &mut Pixmap, radius: usize) {
             let mut a = 0.0;
 
             for dy in 0..kernel_size {
+                if y + dy < radius {
+                    continue;
+                }
                 let sy = y + dy - radius;
-                if sy < 0 || sy >= h {
+                if sy >= h {
                     continue;
                 }
                 let idx = (sy * w + x) * 4;

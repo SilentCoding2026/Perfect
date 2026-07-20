@@ -271,7 +271,7 @@ pub fn apply_idle_motion(states: &mut [BoneState], _skeleton: &Skeleton, time: f
         match state.name.as_str() {
             "torso" => {
                 // Subtle breathing — torso scales slightly
-                state.scale.1 = state.scale.1 * (1.0 + breath_cycle * 0.008);
+                state.scale.1 *= 1.0 + breath_cycle * 0.008;
                 // Very slight sway
                 state.rotation += sway_cycle * 0.3;
             }

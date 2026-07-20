@@ -677,6 +677,7 @@ pub fn apply_secondary_motion(state: &mut CharacterState, dt: f64) {
 // ---------------------------------------------------------------------------
 
 /// Draw a complete character onto a pixmap.
+#[allow(clippy::too_many_arguments)]
 pub fn draw_character(
     desc: &CharacterDesc,
     state: &CharacterState,
@@ -895,6 +896,7 @@ pub fn draw_character(
 // Individual part drawing functions
 // ---------------------------------------------------------------------------
 
+#[allow(clippy::too_many_arguments)]
 fn draw_torso(
     pixmap: &mut Pixmap,
     desc: &CharacterDesc,
@@ -906,7 +908,7 @@ fn draw_torso(
     w: f64,
     h: f64,
     scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     turn_factor: f64,
     _front_factor: f64,
@@ -1191,6 +1193,7 @@ fn draw_torso(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_neck(
     pixmap: &mut Pixmap,
     hx: f64,
@@ -1212,9 +1215,10 @@ fn draw_neck(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_arm(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     _state: &CharacterState,
     sx: f64,
     sy: f64,
@@ -1223,7 +1227,7 @@ fn draw_arm(
     length: f64,
     width: f64,
     _scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     skin: [u8; 3],
     top: &ClothingItem,
@@ -1460,9 +1464,10 @@ fn draw_arm(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_leg(
     pixmap: &mut Pixmap,
-    desc: &CharacterDesc,
+    _desc: &CharacterDesc,
     _state: &CharacterState,
     hx: f64,
     hy: f64,
@@ -1471,9 +1476,9 @@ fn draw_leg(
     length: f64,
     width: f64,
     _scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
-    skin: [u8; 3],
+    _skin: [u8; 3],
     outfit: &OutfitDesc,
     is_back: bool,
 ) {
@@ -1652,6 +1657,7 @@ fn draw_leg(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_head(
     pixmap: &mut Pixmap,
     desc: &CharacterDesc,
@@ -2038,6 +2044,7 @@ fn draw_head(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_eye(
     pixmap: &mut Pixmap,
     desc: &CharacterDesc,
@@ -2048,7 +2055,7 @@ fn draw_eye(
     openness: f64,
     eyebrow_pos: f64,
     _scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     tilt: f64,
     rot_cx: f64,
@@ -2260,6 +2267,7 @@ fn draw_eye(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_mouth(
     pixmap: &mut Pixmap,
     desc: &CharacterDesc,
@@ -2463,6 +2471,7 @@ fn draw_mouth(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_hair_back(
     pixmap: &mut Pixmap,
     desc: &CharacterDesc,
@@ -2471,7 +2480,7 @@ fn draw_hair_back(
     rx: f64,
     ry: f64,
     scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     tilt: f64,
     hair_swing: f64,
@@ -2490,8 +2499,8 @@ fn draw_hair_back(
     let swing_offset = hair_swing * scale * 0.3;
 
     match desc.hair.style {
-        HairStyle::Straight | HairStyle::Wavy => {
-            if desc.hair.length > 0.3 {
+        HairStyle::Straight | HairStyle::Wavy
+            if desc.hair.length > 0.3 => {
                 let hair_len = ry * (0.5 + desc.hair.length * 1.2);
                 let transform = tilt_transform(tilt, cx, cy);
                 let mut pb = PathBuilder::new();
@@ -2544,12 +2553,12 @@ fn draw_hair_back(
                         pixmap.stroke_path(&path, &strand_paint, &strand_stroke, transform, None);
                     }
                 }
-            }
         }
         _ => {}
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_hair_front(
     pixmap: &mut Pixmap,
     desc: &CharacterDesc,
@@ -2558,7 +2567,7 @@ fn draw_hair_front(
     rx: f64,
     ry: f64,
     scale: f64,
-    flip: f64,
+    _flip: f64,
     opacity: f64,
     tilt: f64,
     hair_swing: f64,
@@ -2799,6 +2808,7 @@ fn draw_hair_front(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_fedora(
     pixmap: &mut Pixmap,
     cx: f64,
@@ -2883,6 +2893,7 @@ fn draw_fedora(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn draw_glasses(
     pixmap: &mut Pixmap,
     cx: f64,
@@ -2944,6 +2955,7 @@ fn draw_glasses(
 // Drawing primitives
 // ---------------------------------------------------------------------------
 
+#[allow(clippy::too_many_arguments)]
 fn draw_limb_segment(
     pixmap: &mut Pixmap,
     x1: f64,
@@ -3090,10 +3102,7 @@ fn fill_rect(pixmap: &mut Pixmap, x: f64, y: f64, w: f64, h: f64, paint: &Paint)
     }
 }
 
-fn fill_circle(pixmap: &mut Pixmap, cx: f64, cy: f64, r: f64, paint: &Paint) {
-    fill_circle_t(pixmap, cx, cy, r, paint, 0.0, 0.0, 0.0);
-}
-
+#[allow(clippy::too_many_arguments)]
 fn fill_circle_t(
     pixmap: &mut Pixmap,
     cx: f64,
@@ -3148,6 +3157,7 @@ fn fill_circle_t(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn stroke_circle_t(
     pixmap: &mut Pixmap,
     cx: f64,
@@ -3210,9 +3220,9 @@ fn stroke_circle_t(
 
 fn shade_color(color: [u8; 3], amount: f64) -> [u8; 3] {
     [
-        (color[0] as f64 * (1.0 - amount)).max(0.0).min(255.0) as u8,
-        (color[1] as f64 * (1.0 - amount)).max(0.0).min(255.0) as u8,
-        (color[2] as f64 * (1.0 - amount)).max(0.0).min(255.0) as u8,
+        (color[0] as f64 * (1.0 - amount)).clamp(0.0, 255.0) as u8,
+        (color[1] as f64 * (1.0 - amount)).clamp(0.0, 255.0) as u8,
+        (color[2] as f64 * (1.0 - amount)).clamp(0.0, 255.0) as u8,
     ]
 }
 
@@ -3244,31 +3254,6 @@ fn draw_outlined_path(
         ..Stroke::default()
     };
     pixmap.stroke_path(path, &outline_paint, &stroke, transform, None);
-}
-
-fn draw_shaded_path(
-    pixmap: &mut Pixmap,
-    path: &tiny_skia::Path,
-    fill_color: [u8; 3],
-    opacity: f64,
-    transform: Transform,
-    shade_clip_path: Option<&tiny_skia::Path>,
-) {
-    // Draw the main fill + outline.
-    draw_outlined_path(pixmap, path, fill_color, opacity, transform);
-
-    // Draw shadow on the right side for a "light from upper-left" effect.
-    if let Some(clip_path) = shade_clip_path {
-        let shadow_color = shade_color(fill_color, 0.18);
-        let shadow_paint = solid_paint(
-            shadow_color[0],
-            shadow_color[1],
-            shadow_color[2],
-            opacity * 0.6,
-        );
-        // Use the clip path as the shadow shape (pre-computed right-half of the shape).
-        pixmap.fill_path(clip_path, &shadow_paint, FillRule::Winding, transform, None);
-    }
 }
 
 fn solid_paint(r: u8, g: u8, b: u8, opacity: f64) -> Paint<'static> {

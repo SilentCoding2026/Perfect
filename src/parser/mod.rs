@@ -20,19 +20,16 @@ pub fn parse(source: &str) -> Result<Program, AnimError> {
     let mut items = Vec::new();
 
     for pair in pairs {
-        match pair.as_rule() {
-            Rule::program => {
-                for inner in pair.into_inner() {
-                    match inner.as_rule() {
-                        Rule::top_level_item => {
-                            items.push(parse_top_level_item(inner)?);
-                        }
-                        Rule::EOI => {}
-                        _ => {}
+        if pair.as_rule() == Rule::program {
+            for inner in pair.into_inner() {
+                match inner.as_rule() {
+                    Rule::top_level_item => {
+                        items.push(parse_top_level_item(inner)?);
                     }
+                    Rule::EOI => {}
+                    _ => {}
                 }
             }
-            _ => {}
         }
     }
 

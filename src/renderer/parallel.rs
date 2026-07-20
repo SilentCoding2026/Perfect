@@ -44,7 +44,7 @@ pub fn render_scene_parallel(
     // Wrap assets in Arc for sharing across threads.
     // We need to clone the asset data for each thread since we can't share
     // references across threads safely without Arc.
-    let assets_arc = Arc::new(assets.clone());
+    let assets_arc = Arc::new(assets);
     let initial_entities_arc = Arc::new(initial_entities.clone());
     let custom_poses_arc = Arc::new(custom_poses.clone());
 
@@ -56,14 +56,14 @@ pub fn render_scene_parallel(
 
     let pb_arc = Arc::new(Mutex::new(pb));
 
-    // Render frames in parallel.
-    let frames: Vec<Option<Frame>> = (0..total_frames)
+    // Render frames in parallel, preserving frame indices for correct ordering.
+    let frames_with_index: Vec<(usize, Result<Frame, AnimError>)> = (0..total_frames)
         .into_par_iter()
         .map(|frame_idx| {
             let t = frame_idx as f64 / config.fps as f64;
 
             // Clone data for this thread.
-            let assets = assets_arc.as_ref().clone();
+            let assets = assets_arc.as_ref();
             let initial_entities = initial_entities_arc.as_ref().clone();
             let custom_poses = custom_poses_arc.as_ref().clone();
 
@@ -78,62 +78,6 @@ pub fn render_scene_parallel(
             );
 
             // Update progress bar.
-            if let Ok(pb) = pb_arc.lock() {
-                pb.inc(1);
-            }
-
-            match result {
-                Ok(frame) => Some(frame),
-                Err(e) => {
-                    log::error!("Frame {} failed: {}", frame_idx, e);
-                    None
-                }
-            }
-        })
-        .collect();
-
-    // Check for failures.
-    let frame_count = frames.iter().filter(|f| f.is_some()).count();
-    if frame_count < total_frames {
-        let errors = total_frames - frame_count;
-        return Err(AnimError::Render(format!(
-            "Failed to render {} frames out of {}",
-            errors, total_frames
-        )));
-    }
-
-    // Extract frames and sort by index.
-    let result: Vec<Frame> = frames.into_iter().filter_map(|f| f).collect();
-
-    // The frames should already be in order since we iterated by index,
-    // but rayon may reorder. Sort by a stable key.
-    // We need to re-sort by frame index — we lost the index when we mapped to Option.
-    // Instead, we need to preserve the index. Let's use enumerate.
-
-    // Re-render with index preservation.
-    // Actually, the simpler approach: collect with index, then sort.
-    // Let's re-do this properly.
-
-    // The current approach loses index. Let's use a different strategy:
-    // Collect (index, frame) pairs and sort by index.
-    let frames_with_index: Vec<(usize, Result<Frame, AnimError>)> = (0..total_frames)
-        .into_par_iter()
-        .map(|frame_idx| {
-            let t = frame_idx as f64 / config.fps as f64;
-            let assets = assets_arc.as_ref().clone();
-            let initial_entities = initial_entities_arc.as_ref().clone();
-            let custom_poses = custom_poses_arc.as_ref().clone();
-
-            let result = render_frame(
-                config,
-                timeline,
-                &initial_entities,
-                set_name,
-                &assets,
-                &custom_poses,
-                t,
-            );
-
             if let Ok(pb) = pb_arc.lock() {
                 pb.inc(1);
             }
@@ -154,7 +98,7 @@ pub fn render_scene_parallel(
         }
     }
 
-    // Sort by index.
+    // Sort by index (rayon may reorder).
     successes.sort_by_key(|(idx, _)| *idx);
 
     // Extract frames.

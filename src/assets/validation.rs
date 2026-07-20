@@ -72,15 +72,8 @@ fn validate_range(field: &str, value: f64, min: f64, max: f64) -> Result<(), Ani
 }
 
 /// Validate that a color value is within 0-255.
-fn validate_color(field: &str, color: &[u8; 3]) -> Result<(), AnimError> {
-    for (i, &c) in color.iter().enumerate() {
-        if c > 255 {
-            return Err(AnimError::Asset(format!(
-                "Color field '{}' has component {} with value {} which exceeds 255",
-                field, i, c
-            )));
-        }
-    }
+fn validate_color(_field: &str, _color: &[u8; 3]) -> Result<(), AnimError> {
+    // u8 values are always in 0-255 by construction, so no runtime check needed.
     Ok(())
 }
 
@@ -102,7 +95,7 @@ pub fn validate_rig_json(json: &str) -> Result<(), AnimError> {
     // Check required fields.
     let required_fields = ["name", "height", "skeleton", "poses"];
     for field in &required_fields {
-        if !v.get(*field).is_some() {
+        if v.get(*field).is_none() {
             return Err(AnimError::Asset(format!(
                 "Rig JSON missing required field: '{}'",
                 field

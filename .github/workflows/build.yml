@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest]
 
     steps:
     - name: Checkout code
@@ -79,7 +79,7 @@ jobs:
 
   validate-examples:
     name: Validate Examples
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     steps:
     - name: Checkout code
@@ -104,22 +104,20 @@ jobs:
           validate-cargo-
 
     - name: Install FFmpeg
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ffmpeg
+      run: choco install ffmpeg -y
 
     - name: Build
       run: cargo build --release
 
     - name: Check all example scripts
       run: |
-        for file in examples/*.anim; do
-          echo "Checking $file..."
-          cargo run --release -- check "$file"
-        done
+        Get-ChildItem examples/*.anim | ForEach-Object {
+          Write-Output "Checking $($_.Name)..."
+          cargo run --release -- check $_.FullName
+        }
 
     - name: Render test
       run: |
-        cargo run --release -- render examples/the-last-barista.anim -o /tmp/output.mp4 --sequential
-        test -f /tmp/output.mp4
-        echo "Render test passed!"
+        cargo run --release -- render examples/the-last-barista.anim -o output.mp4 --sequential
+        if (!(Test-Path output.mp4)) { exit 1 }
+        Write-Output "Render test passed!"

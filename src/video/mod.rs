@@ -24,12 +24,12 @@ pub fn encode_png_sequence(frames: &[Frame], output_dir: &Path) -> Result<(), An
     std::fs::create_dir_all(output_dir)?;
 
     for (i, frame) in frames.iter().enumerate() {
-        let path = output_dir.join(format!(\"frame_{:06}.png\", i));
+        let path = output_dir.join(format!("frame_{:06}.png", i));
         write_png(&path, &frame.data, frame.width, frame.height)?;
     }
 
     log::info!(
-        \"Wrote {} PNG frames to {}\",
+        "Wrote {} PNG frames to {}",
         frames.len(),
         output_dir.display()
     );
@@ -79,11 +79,11 @@ fn write_png(path: &Path, data: &[u8], width: u32, height: u32) -> Result<(), An
 
     let mut writer = encoder
         .write_header()
-        .map_err(|e| AnimError::Render(format!(\"PNG header error: {e}\")))?;
+        .map_err(|e| AnimError::Render(format!("PNG header error: {e}")))?;
 
     writer
         .write_image_data(data)
-        .map_err(|e| AnimError::Render(format!(\"PNG write error: {e}\")))?;
+        .map_err(|e| AnimError::Render(format!("PNG write error: {e}")))?;
 
     Ok(())
 }

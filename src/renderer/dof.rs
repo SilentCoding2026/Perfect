@@ -182,7 +182,7 @@ pub fn apply_depth_of_field_per_pixel(
 
     if z_buffer.len() < w * h {
         return Err(AnimError::Render(
-            \"Z-buffer size does not match pixmap size\".into(),
+            "Z-buffer size does not match pixmap size".into(),
         ));
     }
 

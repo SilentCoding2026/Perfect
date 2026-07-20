@@ -24,9 +24,9 @@ use animdsl::video::VideoFormat;
 
 #[derive(Parser)]
 #[command(
-    name = \"animdsl\",
+    name = "animdsl",
     version,
-    about = \"A DSL for generating 2D animated movie scenes\"
+    about = "A DSL for generating 2D animated movie scenes"
 )]
 struct Cli {
     #[command(subcommand)]
@@ -49,7 +49,7 @@ enum Commands {
         png_dir: Option<PathBuf>,
 
         /// Video format: mp4, webm, mov, gif.
-        #[arg(long, default_value = \"mp4\")]
+        #[arg(long, default_value = "mp4")]
         format: String,
 
         /// Override FPS.
@@ -240,7 +240,7 @@ fn cmd_render(
         video::encode_png_sequence(&all_frames, dir)?;
 
         println!(
-            \"Rendered {} scene(s), {} frames -> PNG sequence in {}\",
+            "Rendered {} scene(s), {} frames -> PNG sequence in {}",
             scenes.len(),
             all_frames.len(),
             dir.display(),
@@ -272,7 +272,7 @@ fn cmd_render(
 
     let total_frames = (total_duration * config.fps as f64).ceil() as usize;
     log::info!(
-        \"Total: {} scenes, {} frames, {:.1}s, format: {:?}\",
+        "Total: {} scenes, {} frames, {:.1}s, format: {:?}",
         scenes.len(),
         total_frames,
         total_duration,
@@ -284,9 +284,9 @@ fn cmd_render(
     let use_parallel = !sequential && total_frames > 200;
 
     if use_parallel {
-        log::info!(\"Using parallel rendering with {} cores\", renderer::parallel::num_cores());
+        log::info!("Using parallel rendering with {} cores", renderer::parallel::num_cores());
     } else {
-        log::info!(\"Using sequential rendering\");
+        log::info!("Using sequential rendering");
     }
 
     // Use format-specific streaming encoder.
@@ -301,7 +301,7 @@ fn cmd_render(
     let mut frame_count = 0;
 
     for (compiled_timeline, resolved) in compiled_scenes {
-        log::info!(\"Rendering scene: {}\", resolved.name);
+        log::info!("Rendering scene: {}", resolved.name);
 
         let scene_frames = if use_parallel {
             let frames = renderer::parallel::render_scene_parallel(
@@ -335,13 +335,13 @@ fn cmd_render(
             )?
         };
 
-        log::info!(\"Scene complete: {} frames\", scene_frames);
+        log::info!("Scene complete: {} frames", scene_frames);
     }
 
     let frames_written = encoder.finish()?;
 
     println!(
-        \"Rendered {} scene(s), {} frames -> {} ({:?})\",
+        "Rendered {} scene(s), {} frames -> {} ({:?})",
         scenes.len(),
         frames_written,
         output.display(),
@@ -412,11 +412,11 @@ fn cmd_check(input: &Path) -> Result<()> {
         timeline::check_overlaps(&compiled_timeline, &resolved.entities, &character_names)?;
     }
 
-    println!(\"OK: {}\", input.display());
-    println!(\"  Imports: {n_imports}\");
-    println!(\"  Config:  {}\", if has_config { \"yes\" } else { \"no\" });
-    println!(\"  Scenes:  {n_scenes}\");
-    println!(\"  Overlaps: none detected\");
+    println!("OK: {}", input.display());
+    println!("  Imports: {n_imports}");
+    println!("  Config:  {}", if has_config { "yes" } else { "no" });
+    println!("  Scenes:  {n_scenes}");
+    println!("  Overlaps: none detected");
 
     Ok(())
 }
@@ -425,6 +425,6 @@ fn cmd_dump(input: &Path) -> Result<()> {
     let source = std::fs::read_to_string(input)?;
     let program = animdsl::parser::parse(&source)?;
     let json = serde_json::to_string_pretty(&program)?;
-    println!(\"{json}\");
+    println!("{json}");
     Ok(())
 }

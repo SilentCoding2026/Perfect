@@ -11,7 +11,7 @@ env:
 jobs:
   check:
     name: Check
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -36,9 +36,7 @@ jobs:
           pr-cargo-
 
     - name: Install FFmpeg
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ffmpeg
+      run: choco install ffmpeg -y
 
     - name: Check formatting
       run: cargo fmt -- --check
@@ -54,20 +52,20 @@ jobs:
 
     - name: Validate examples
       run: |
-        for file in examples/*.anim; do
-          echo "Checking $file..."
-          cargo run --release -- check "$file"
-        done
+        Get-ChildItem examples/*.anim | ForEach-Object {
+          Write-Output "Checking $($_.Name)..."
+          cargo run --release -- check $_.FullName
+        }
 
     - name: Render test
       run: |
-        cargo run --release -- render examples/the-last-barista.anim -o /tmp/output.mp4 --sequential
-        test -f /tmp/output.mp4
-        echo "Render test passed!"
+        cargo run --release -- render examples/the-last-barista.anim -o output.mp4 --sequential
+        if (!(Test-Path output.mp4)) { exit 1 }
+        Write-Output "Render test passed!"
 
   security:
     name: Security Audit
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4

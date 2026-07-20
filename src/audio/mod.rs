@@ -52,31 +52,31 @@ impl AudioTrack {
     pub fn load(path: &Path) -> Result<Self, AnimError> {
         if !path.exists() {
             return Err(AnimError::Audio(format!(
-                \"Audio file not found: {}\",
+                "Audio file not found: {}",
                 path.display()
             )));
         }
 
         // Use ffprobe to get audio metadata.
-        let output = Command::new(\"ffprobe\")
+        let output = Command::new("ffprobe")
             .args([
-                \"-v\",
-                \"quiet\",
-                \"-print_format\",
-                \"json\",
-                \"-show_format\",
-                \"-show_streams\",
+                "-v",
+                "quiet",
+                "-print_format",
+                "json",
+                "-show_format",
+                "-show_streams",
                 path.as_os_str().to_str().unwrap(),
             ])
             .output()
             .map_err(|e| {
-                AnimError::Audio(format!(\"Failed to probe audio file: {}\", e))
+                AnimError::Audio(format!("Failed to probe audio file: {}", e))
             })?;
 
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
             return Err(AnimError::Audio(format!(
-                \"ffprobe failed for {}: {}\",
+                "ffprobe failed for {}: {}",
                 path.display(),
                 stderr
             )));
@@ -84,31 +84,31 @@ impl AudioTrack {
 
         // Parse ffprobe JSON output.
         let json: serde_json::Value = serde_json::from_slice(&output.stdout)
-            .map_err(|e| AnimError::Audio(format!(\"Failed to parse ffprobe output: {}\", e)))?;
+            .map_err(|e| AnimError::Audio(format!("Failed to parse ffprobe output: {}", e)))?;
 
-        let format = json[\"format\"][\"format_name\"]
+        let format = json["format"]["format_name"]
             .as_str()
-            .unwrap_or(\"unknown\")
+            .unwrap_or("unknown")
             .to_string();
 
-        let duration = json[\"format\"][\"duration\"]
+        let duration = json["format"]["duration"]
             .as_str()
             .and_then(|s| s.parse::<f64>().ok())
             .unwrap_or(0.0);
 
         // Get sample rate and channels from the first audio stream.
-        let streams = json[\"streams\"].as_array().unwrap_or(&vec![]);
+        let streams = json["streams"].as_array().unwrap_or(&vec![]);
         let audio_stream = streams.iter().find(|s| {
-            s[\"codec_type\"].as_str() == Some(\"audio\")
+            s["codec_type"].as_str() == Some("audio")
         });
 
         let sample_rate = audio_stream
-            .and_then(|s| s[\"sample_rate\"].as_str())
+            .and_then(|s| s["sample_rate"].as_str())
             .and_then(|s| s.parse::<u32>().ok())
             .unwrap_or(44100);
 
         let channels = audio_stream
-            .and_then(|s| s[\"channels\"].as_u64())
+            .and_then(|s| s["channels"].as_u64())
             .unwrap_or(2) as u16;
 
         Ok(AudioTrack {
@@ -129,7 +129,7 @@ impl AudioTrack {
     pub fn is_supported(&self) -> bool {
         matches!(
             self.extension(),
-            Some(\"mp3\") | Some(\"wav\") | Some(\"aac\") | Some(\"flac\") | Some(\"ogg\") | Some(\"m4a\")
+            Some("mp3") | Some("wav") | Some("aac") | Some("flac") | Some("ogg") | Some("m4a")
         )
     }
 }
@@ -215,7 +215,7 @@ pub fn mux_audio_video(
     output_path: &Path,
 ) -> Result<(), AnimError> {
     log::info!(
-        \"Muxing audio {} with video {} -> {}\",
+        "Muxing audio {} with video {} -> {}",
         audio_path.display(),
         video_path.display(),
         output_path.display()
@@ -226,49 +226,49 @@ pub fn mux_audio_video(
         if !parent.as_os_str().is_empty() {
             std::fs::create_dir_all(parent).map_err(|e| {
                 AnimError::Audio(format!(
-                    \"failed to create output directory '{}': {e}\",
+                    "failed to create output directory '{}': {e}",
                     parent.display()
                 ))
             })?;
         }
     }
 
-    let status = Command::new(\"ffmpeg\")
+    let status = Command::new("ffmpeg")
         .args([
-            \"-y\",
-            \"-i\",
+            "-y",
+            "-i",
             video_path.as_os_str().to_str().unwrap(),
-            \"-i\",
+            "-i",
             audio_path.as_os_str().to_str().unwrap(),
-            \"-c:v\",
-            \"copy\",
-            \"-c:a\",
-            \"aac\",
-            \"-map\",
-            \"0:v:0\",
-            \"-map\",
-            \"1:a:0\",
-            \"-shortest\",
+            "-c:v",
+            "copy",
+            "-c:a",
+            "aac",
+            "-map",
+            "0:v:0",
+            "-map",
+            "1:a:0",
+            "-shortest",
             output_path.as_os_str().to_str().unwrap(),
         ])
         .status()
-        .map_err(|e| AnimError::Audio(format!(\"Failed to run ffmpeg: {}\", e)))?;
+        .map_err(|e| AnimError::Audio(format!("Failed to run ffmpeg: {}", e)))?;
 
     if !status.success() {
         return Err(AnimError::Audio(format!(
-            \"FFmpeg muxing failed for {}\",
+            "FFmpeg muxing failed for {}",
             output_path.display()
         )));
     }
 
-    log::info!(\"Muxing complete: {}\", output_path.display());
+    log::info!("Muxing complete: {}", output_path.display());
     Ok(())
 }
 
 /// Extract audio from a video file.
 pub fn extract_audio(input_path: &Path, output_path: &Path) -> Result<(), AnimError> {
     log::info!(
-        \"Extracting audio from {} -> {}\",
+        "Extracting audio from {} -> {}",
         input_path.display(),
         output_path.display()
     );
@@ -278,34 +278,34 @@ pub fn extract_audio(input_path: &Path, output_path: &Path) -> Result<(), AnimEr
         if !parent.as_os_str().is_empty() {
             std::fs::create_dir_all(parent).map_err(|e| {
                 AnimError::Audio(format!(
-                    \"failed to create output directory '{}': {e}\",
+                    "failed to create output directory '{}': {e}",
                     parent.display()
                 ))
             })?;
         }
     }
 
-    let status = Command::new(\"ffmpeg\")
+    let status = Command::new("ffmpeg")
         .args([
-            \"-y\",
-            \"-i\",
+            "-y",
+            "-i",
             input_path.as_os_str().to_str().unwrap(),
-            \"-vn\",
-            \"-acodec\",
-            \"copy\",
+            "-vn",
+            "-acodec",
+            "copy",
             output_path.as_os_str().to_str().unwrap(),
         ])
         .status()
-        .map_err(|e| AnimError::Audio(format!(\"Failed to run ffmpeg: {}\", e)))?;
+        .map_err(|e| AnimError::Audio(format!("Failed to run ffmpeg: {}", e)))?;
 
     if !status.success() {
         return Err(AnimError::Audio(format!(
-            \"FFmpeg audio extraction failed for {}\",
+            "FFmpeg audio extraction failed for {}",
             input_path.display()
         )));
     }
 
-    log::info!(\"Audio extraction complete: {}\", output_path.display());
+    log::info!("Audio extraction complete: {}", output_path.display());
     Ok(())
 }
 

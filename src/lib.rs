@@ -18,7 +18,7 @@
 //!
 //! # fn example() -> Result<(), animdsl::errors::AnimError> {
 //! // Parse a script
-//! let source = std::fs::read_to_string(\"scene.anim\")?;
+//! let source = std::fs::read_to_string("scene.anim")?;
 //! let program = parser::parse(&source)?;
 //!
 //! // ... resolve scenes, compile timeline ...

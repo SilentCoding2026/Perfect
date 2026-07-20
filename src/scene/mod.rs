@@ -32,22 +32,22 @@ impl RenderConfig {
         let mut cfg = Self::default();
         for entry in &block.entries {
             match entry.key.as_str() {
-                \"width\" => {
+                "width" => {
                     if let Value::Number(n) = &entry.value {
                         cfg.width = *n as u32;
                     }
                 }
-                \"height\" => {
+                "height" => {
                     if let Value::Number(n) = &entry.value {
                         cfg.height = *n as u32;
                     }
                 }
-                \"fps\" => {
+                "fps" => {
                     if let Value::Number(n) = &entry.value {
                         cfg.fps = *n as u32;
                     }
                 }
-                \"background\" => {
+                "background" => {
                     if let Value::Color(c) = &entry.value {
                         cfg.background = c.clone();
                     }
@@ -105,7 +105,7 @@ impl EntityState {
             scale_y: 1.0,
             rotation: 0.0,
             opacity: 1.0,
-            pose: \"idle\".to_string(),
+            pose: "idle".to_string(),
             facing: Direction::Right,
             layer: 0,
             visible: true,
@@ -123,7 +123,7 @@ impl EntityState {
             scale_y: 1.0,
             rotation: 0.0,
             opacity: 1.0,
-            pose: \"default\".to_string(),
+            pose: "default".to_string(),
             facing: Direction::Right,
             layer: -1,
             visible: true,
@@ -165,7 +165,7 @@ pub fn resolve_position(
         Position::Relative { relation, entity } => {
             let target = entities
                 .get(entity)
-                .ok_or_else(|| AnimError::Scene(format!(\"unknown entity: {entity}\")))?;
+                .ok_or_else(|| AnimError::Scene(format!("unknown entity: {entity}")))?;
             let offset = match relation {
                 Relation::Near => (0.05, 0.0),
                 Relation::Behind => (-0.1, 0.0),
@@ -191,12 +191,12 @@ pub fn resolve_scene(
 
     for param in &scene.params {
         match param.key.as_str() {
-            \"duration\" => {
+            "duration" => {
                 if let Value::Duration(d) = &param.value {
                     duration = d.as_secs();
                 }
             }
-            \"set\" => {
+            "set" => {
                 if let Value::Identifier(name) = &param.value {
                     set_name = Some(name.clone());
                 }

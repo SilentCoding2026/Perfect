@@ -71,7 +71,7 @@ pub fn render_scene(
     let mut frames = Vec::with_capacity(total_frames);
 
     log::info!(
-        \"Rendering {} frames ({}x{} @ {} fps, {:.1}s)\",
+        "Rendering {} frames ({}x{} @ {} fps, {:.1}s)",
         total_frames,
         config.width,
         config.height,
@@ -81,9 +81,9 @@ pub fn render_scene(
 
     let pb = ProgressBar::new(total_frames as u64);
     pb.set_style(ProgressStyle::default_bar()
-        .template(\"{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} frames ({eta})\")
+        .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} frames ({eta})")
         .unwrap()
-        .progress_chars(\"#>-\"));
+        .progress_chars("#>-"));
 
     for frame_idx in 0..total_frames {
         let t = frame_idx as f64 / config.fps as f64;
@@ -100,14 +100,14 @@ pub fn render_scene(
         pb.inc(1);
     }
 
-    pb.finish_with_message(\"Render complete\");
+    pb.finish_with_message("Render complete");
 
     // Log cache stats.
     if let Ok(cache) = POSE_CACHE.lock() {
         let (hits, misses) = cache.stats();
         if hits + misses > 0 {
             log::info!(
-                \"Pose cache: {} hits, {} misses ({:.1}% hit rate)\",
+                "Pose cache: {} hits, {} misses ({:.1}% hit rate)",
                 hits, misses,
                 (hits as f64 / (hits + misses) as f64) * 100.0
             );
@@ -131,7 +131,7 @@ pub fn render_frame(
     let h = config.height;
 
     let mut pixmap =
-        Pixmap::new(w, h).ok_or_else(|| AnimError::Render(\"failed to create pixmap\".into()))?;
+        Pixmap::new(w, h).ok_or_else(|| AnimError::Render("failed to create pixmap".into()))?;
 
     pixmap.fill(SkiaColor::from_rgba8(
         config.background.r,
@@ -422,8 +422,8 @@ fn render_procedural_character(
         }
     };
 
-    let from_state = resolve_pose(from_pose_name.unwrap_or(\"idle\"));
-    let to_state = resolve_pose(to_pose_name.unwrap_or(\"idle\"));
+    let from_state = resolve_pose(from_pose_name.unwrap_or("idle"));
+    let to_state = resolve_pose(to_pose_name.unwrap_or("idle"));
     let mut char_state = procedural::lerp_state_staggered(&from_state, &to_state, pose_t);
 
     let velocity = compute_velocity(timeline, entity_name, t);
@@ -475,7 +475,7 @@ fn render_procedural_character(
     if let Ok(mut cache) = POSE_CACHE.lock() {
         if let Some((cached_pixmap, cached_w, cached_h)) = cache.get(&cache_key) {
             if cached_w == canvas_w && cached_h == canvas_h {
-                log::debug!(\"Pose cache hit for {}\", entity_name);
+                log::debug!("Pose cache hit for {}", entity_name);
                 // Direct render for now.
             }
         }
@@ -583,7 +583,7 @@ fn render_bone_part(
 ) -> Result<(), AnimError> {
     let opts = usvg::Options::default();
     let tree = usvg::Tree::from_data(&part.svg_data, &opts)
-        .map_err(|e| AnimError::Render(format!(\"SVG parse error: {e}\")))?;
+        .map_err(|e| AnimError::Render(format!("SVG parse error: {e}")))?;
 
     let render_sx = scale_x.abs() * flip.abs();
     let render_sy = scale_y.abs();
@@ -596,7 +596,7 @@ fn render_bone_part(
     }
 
     let mut part_pixmap = Pixmap::new(render_w, render_h)
-        .ok_or_else(|| AnimError::Render(\"failed to create part pixmap\".into()))?;
+        .ok_or_else(|| AnimError::Render("failed to create part pixmap".into()))?;
 
     let render_transform = Transform::from_scale(render_sx as f32, render_sy as f32);
     resvg::render(&tree, render_transform, &mut part_pixmap.as_mut());
@@ -645,7 +645,7 @@ fn get_pose_interpolation<'a>(
         .collect();
 
     if events.is_empty() {
-        return (Some(\"idle\"), Some(\"idle\"), 1.0);
+        return (Some("idle"), Some("idle"), 1.0);
     }
 
     let mut current_idx = None;
@@ -656,7 +656,7 @@ fn get_pose_interpolation<'a>(
     }
 
     match current_idx {
-        None => (Some(\"idle\"), Some(events[0].pose.as_str()), 0.0),
+        None => (Some("idle"), Some(events[0].pose.as_str()), 0.0),
         Some(idx) => {
             let current = &events[idx];
             let transition_dur = 0.3;
@@ -672,7 +672,7 @@ fn get_pose_interpolation<'a>(
                 let prev_pose = if idx > 0 {
                     events[idx - 1].pose.as_str()
                 } else {
-                    \"idle\"
+                    "idle"
                 };
                 let progress = elapsed / transition_dur;
                 (Some(prev_pose), Some(current.pose.as_str()), progress)
@@ -736,7 +736,7 @@ fn render_svg_to_pixmap(
 ) -> Result<(), AnimError> {
     let opts = usvg::Options::default();
     let tree = usvg::Tree::from_data(svg_data, &opts)
-        .map_err(|e| AnimError::Render(format!(\"SVG parse error: {e}\")))?;
+        .map_err(|e| AnimError::Render(format!("SVG parse error: {e}")))?;
 
     let svg_size = tree.size();
     let svg_w = svg_size.width() as f64;
@@ -772,7 +772,7 @@ fn render_svg_to_pixmap(
     }
 
     let mut svg_pixmap = Pixmap::new(render_w, render_h)
-        .ok_or_else(|| AnimError::Render(\"failed to create SVG pixmap\".into()))?;
+        .ok_or_else(|| AnimError::Render("failed to create SVG pixmap".into()))?;
 
     let render_transform =
         Transform::from_scale(final_scale_x.abs() as f32, final_scale_y.abs() as f32);

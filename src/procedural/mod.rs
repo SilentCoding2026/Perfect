@@ -6,8 +6,7 @@
 
 use std::f64::consts::PI;
 use tiny_skia::{
-    Color as SkiaColor, FillRule, LineCap, LineJoin, Paint, PathBuilder, Pixmap,
-    Stroke, Transform,
+    Color as SkiaColor, FillRule, LineCap, LineJoin, Paint, PathBuilder, Pixmap, Stroke, Transform,
 };
 
 use serde::{Deserialize, Serialize};

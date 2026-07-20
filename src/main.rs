@@ -124,6 +124,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+#[allow(clippy::too_many_arguments)]
 fn cmd_render(
     input: &Path,
     output: &Path,

@@ -79,22 +79,21 @@ fn validate_color(_field: &str, _color: &[u8; 3]) -> Result<(), AnimError> {
 
 /// Validate color fields in raw JSON have values in 0-255 before deserialization.
 fn validate_json_value_colors(v: &serde_json::Value) -> Result<(), AnimError> {
-    let check_color =
-        |v: &serde_json::Value, field: &str| -> Result<(), AnimError> {
-            if let Some(arr) = v.as_array() {
-                for item in arr.iter() {
-                    if let Some(n) = item.as_i64() {
-                        if n < 0 || n > 255 {
-                            return Err(AnimError::Asset(format!(
-                                "Field '{}' has value {} which is outside the valid range [0, 255]",
-                                field, n
-                            )));
-                        }
+    let check_color = |v: &serde_json::Value, field: &str| -> Result<(), AnimError> {
+        if let Some(arr) = v.as_array() {
+            for item in arr.iter() {
+                if let Some(n) = item.as_i64() {
+                    if n < 0 || n > 255 {
+                        return Err(AnimError::Asset(format!(
+                            "Field '{}' has value {} which is outside the valid range [0, 255]",
+                            field, n
+                        )));
                     }
                 }
             }
-            Ok(())
-        };
+        }
+        Ok(())
+    };
 
     if let Some(body) = v.get("body") {
         if let Some(color) = body.get("skin_color") {
